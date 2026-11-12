@@ -180,7 +180,7 @@ The site runs on Cloudflare Workers: static pages are served from Cloudflare's n
 ```bash
 npx wrangler login                                  # once, opens the browser
 npx wrangler secret put DATABASE_URL                # paste the Neon connection string (stored encrypted)
-SITE_URL=https://school33-qibray.<account>.workers.dev npm run deploy:cf
+npm run deploy:cf                                   # live at https://school33-qibray.school33-web.workers.dev
 ```
 
 `npm run preview:cf` runs the Cloudflare build locally (it reads `.env`). Settings are in `wrangler.jsonc`.

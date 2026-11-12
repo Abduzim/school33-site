@@ -12,7 +12,7 @@
     "cms": "decap-server",
     "optimize-images": "node scripts/optimize-images.mjs",
     "build:cf": "DEPLOY_TARGET=cloudflare astro build",
-    "deploy:cf": "npm run build:cf && wrangler deploy",
+    "deploy:cf": "SITE_URL=${SITE_URL:-https://school33-qibray.school33-web.workers.dev} npm run build:cf && wrangler deploy -c dist/server/wrangler.json",
     "preview:cf": "npm run build:cf && wrangler dev"
   },
   "dependencies": {
