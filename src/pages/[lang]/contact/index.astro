@@ -242,9 +242,10 @@ const subjects = ['general', 'admissions', 'employment', 'other'] as const;
   .form-card {
     padding: clamp(24px, 4vw, 44px);
     background: var(--surface);
-    border: 1px solid var(--rule);
-    border-top: 3px solid var(--brand);
-    border-radius: var(--radius);
+    border: 10px solid transparent;
+    background:
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      var(--grad-blue) border-box;
   }
   .form-card h2 {
     font-size: 1.6rem;
@@ -276,9 +277,9 @@ const subjects = ['general', 'admissions', 'employment', 'other'] as const;
   .field textarea {
     width: 100%;
     padding: 13px 14px;
-    border: 1.5px solid var(--rule);
+    border: 1.5px solid #c9cdd2;
     border-radius: var(--radius);
-    background: var(--bg);
+    background: var(--surface);
     font-weight: 500;
     font-size: 1rem;
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
@@ -296,7 +297,7 @@ const subjects = ['general', 'admissions', 'employment', 'other'] as const;
     box-shadow: 0 0 0 3px var(--brand-100);
   }
   .was-validated :invalid {
-    border-color: var(--accent);
+    border-color: var(--danger);
   }
   .consent {
     display: flex;
@@ -317,7 +318,7 @@ const subjects = ['general', 'admissions', 'employment', 'other'] as const;
     text-underline-offset: 2px;
   }
   .was-validated .consent input:invalid + span {
-    color: var(--accent);
+    color: var(--danger);
   }
   .form__submit {
     justify-self: start;
@@ -343,9 +344,9 @@ const subjects = ['general', 'admissions', 'employment', 'other'] as const;
   .form__status.is-error {
     padding: 14px 16px;
     border-radius: var(--radius);
-    border-left: 3px solid var(--accent);
-    background: var(--accent-50);
-    color: var(--accent-600);
+    border-left: 3px solid var(--danger);
+    background: #fdecec;
+    color: var(--danger);
   }
   .hp {
     position: absolute;

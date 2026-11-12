@@ -72,15 +72,25 @@ collections:
         fields:
           - { name: value, label: Number, widget: string }
           - { name: label, label: Label, widget: string }
-      - { name: highlights_title, label: Highlights heading, widget: string, i18n: true }
+      - { name: highlights_title, label: Steps block heading, widget: string, i18n: true }
       - name: highlights
-        label: Highlights
+        label: Steps (numbered 1, 2, 3 …)
         widget: list
         i18n: true
         fields:
           - { name: title, label: Title, widget: string }
           - { name: text, label: Text, widget: text }
           - { name: link, label: Link, widget: string, required: false }
+      - name: cards
+        label: Boxes (parents, teachers, …)
+        widget: list
+        i18n: true
+        required: false
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: text, label: Text, widget: text }
+          - { name: label, label: Button text, widget: string }
+          - { name: link, label: 'Button link (e.g. about/employment or https://…)', widget: string, required: false }
       - { name: welcome_title, label: Welcome heading, widget: string, i18n: true }
       - { name: body, label: Welcome text, widget: markdown, i18n: true }
       - { name: welcome_author, label: Welcome — name, widget: string, i18n: true }

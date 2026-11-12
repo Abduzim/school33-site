@@ -1,0 +1,69 @@
+---
+// Line drawing of a school building with the school number on the front.
+// Colour comes from `currentColor`, so set `color` on a parent.
+// Every shape has pathLength="1" so the motion script can "draw" it (see global.css → Motion).
+interface Props {
+  label: string;
+  class?: string;
+}
+const { label, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['draw', className]}
+  data-draw
+  viewBox="0 0 360 200"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <!-- trees -->
+  <circle pathLength="1" cx="26" cy="146" r="17" />
+  <path pathLength="1" d="M26 163v35M26 176l-8-7M26 172l7-6" />
+  <circle pathLength="1" cx="336" cy="156" r="12" />
+  <path pathLength="1" d="M336 168v30" />
+  <!-- wings -->
+  <rect pathLength="1" x="58" y="104" width="244" height="94" />
+  <path pathLength="1" d="M58 104h244" />
+  <!-- central block and roof -->
+  <rect pathLength="1" x="138" y="72" width="84" height="126" />
+  <path pathLength="1" d="M128 72 180 40l52 32" />
+  <!-- flag -->
+  <path pathLength="1" d="M180 40V6" />
+  <path class="flag" pathLength="1" d="M180 7h24l-6 7 6 7h-24" />
+  <!-- number plate -->
+  <rect pathLength="1" x="156" y="88" width="48" height="34" rx="5" />
+  <text
+    x="180"
+    y="113"
+    text-anchor="middle"
+    font-size="24"
+    font-weight="700"
+    font-family="Onest Variable, system-ui, sans-serif"
+    fill="currentColor"
+    stroke="none">{label}</text
+  >
+  <!-- door -->
+  <path pathLength="1" d="M164 198v-40a16 16 0 0 1 32 0v40M180 142v56" />
+  <!-- steps -->
+  <path pathLength="1" d="M154 198h52" />
+  <!-- left wing windows -->
+  <rect pathLength="1" x="70" y="118" width="16" height="22" />
+  <rect pathLength="1" x="94" y="118" width="16" height="22" />
+  <rect pathLength="1" x="118" y="118" width="12" height="22" />
+  <rect pathLength="1" x="70" y="158" width="16" height="22" />
+  <rect pathLength="1" x="94" y="158" width="16" height="22" />
+  <rect pathLength="1" x="118" y="158" width="12" height="22" />
+  <!-- right wing windows -->
+  <rect pathLength="1" x="230" y="118" width="12" height="22" />
+  <rect pathLength="1" x="250" y="118" width="16" height="22" />
+  <rect pathLength="1" x="274" y="118" width="16" height="22" />
+  <rect pathLength="1" x="230" y="158" width="12" height="22" />
+  <rect pathLength="1" x="250" y="158" width="16" height="22" />
+  <rect pathLength="1" x="274" y="158" width="16" height="22" />
+  <!-- ground -->
+  <path pathLength="1" d="M0 198h360" />
+</svg>

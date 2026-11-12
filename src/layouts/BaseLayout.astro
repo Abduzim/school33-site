@@ -111,6 +111,55 @@ const jsonLd = [orgSchema, ...(isHome ? [websiteSchema] : []), ...schema];
     <Footer lang={lang} />
 
     <script>
+      // ---------- Motion (styles: global.css → Motion) ----------
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Stagger index for each stroke of a line drawing, and for the step numbers.
+      document.querySelectorAll<SVGElement>('[data-draw]').forEach((svg) =>
+        svg.querySelectorAll<SVGElement>('path, rect, circle, line').forEach((el, i) => el.style.setProperty('--i', String(i))),
+      );
+      document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((list) =>
+        [...list.children].forEach((el, i) => (el as HTMLElement).style.setProperty('--d', `${150 + i * 120}ms`)),
+      );
+
+      // Count a number up from 0 when it scrolls into view.
+      const countUp = (el: HTMLElement) => {
+        const target = Number((el.textContent || '').replace(/\D/g, ''));
+        if (reduceMotion || !target || target < 2) return;
+        const start = performance.now();
+        const duration = 1200 + Math.min(target, 900);
+        const tick = (now: number) => {
+          const p = Math.min((now - start) / duration, 1);
+          el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        el.textContent = '0';
+        requestAnimationFrame(tick);
+      };
+
+      const reveal = (el: Element) => {
+        el.classList.add('is-in');
+        el.querySelectorAll<HTMLElement>('[data-count]').forEach(countUp);
+        el.querySelectorAll('[data-draw]').forEach((d) => d.classList.add('is-in'));
+      };
+      const watched = document.querySelectorAll('[data-reveal], [data-draw], [data-watch]');
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        watched.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                reveal(entry.target);
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.15 },
+        );
+        watched.forEach((el) => io.observe(el));
+      }
+
       // Events are built ahead of time, so hide the ones that have already finished.
       const today = new Date();
       today.setHours(0, 0, 0, 0);

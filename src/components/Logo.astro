@@ -35,37 +35,34 @@ const { name, tagline, logo, monogram, href, inverted = false } = Astro.props;
     min-width: 0;
   }
   .logo__img {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     object-fit: contain;
   }
-  /* The number plate: an ink square, like the number painted on the school building. */
   .logo__mark {
     flex: none;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius);
-    background: var(--brand);
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--grad-blue);
     color: #fff;
-    font-family: var(--font-serif);
-    font-weight: 700;
-    font-size: 1.35rem;
-    font-variant-numeric: lining-nums;
-    letter-spacing: -0.02em;
-    box-shadow: inset 0 -3px 0 var(--accent);
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.03em;
   }
   .logo__text {
     display: flex;
     flex-direction: column;
-    line-height: 1.2;
+    line-height: 1.15;
     min-width: 0;
   }
   .logo__name {
-    font-family: var(--font-serif);
-    font-weight: 650;
-    font-size: 1.1rem;
+    font-weight: 750;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -78,9 +75,8 @@ const { name, tagline, logo, monogram, href, inverted = false } = Astro.props;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .logo--inverted .logo__mark {
-    background: #fff;
-    color: var(--brand);
+  .logo--inverted .logo__name {
+    color: #fff;
   }
   .logo--inverted .logo__tagline {
     color: rgb(255 255 255 / 0.7);

@@ -36,6 +36,11 @@ const home = defineCollection({
       .array(z.object({ title: text, text: text, link: z.string().nullish().transform((v) => v || undefined) }))
       .nullish()
       .transform((v) => v ?? []),
+    // Boxes with a gradient frame: one for parents, one for teachers, etc.
+    cards: z
+      .array(z.object({ title: text, text: text, label: text, link: z.string().nullish().transform((v) => v || undefined) }))
+      .nullish()
+      .transform((v) => v ?? []),
     welcome_title: text,
     welcome_author: text,
     welcome_role: text,

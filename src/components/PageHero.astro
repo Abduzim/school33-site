@@ -30,9 +30,8 @@ const breadcrumbSchema = {
 };
 ---
 
-<section class="page-hero paper">
+<section class="page-hero">
   <div class="container page-hero__inner">
-    <span class="margin-line" aria-hidden="true"></span>
     <nav class="crumbs" aria-label={t('common.breadcrumbs')}>
       <ol>
         {
@@ -55,22 +54,19 @@ const breadcrumbSchema = {
 
 <style>
   .page-hero {
-    --pad-top: clamp(32px, 6vw, 72px);
-    --pad-bottom: clamp(32px, 5vw, 64px);
     position: relative;
-    overflow: hidden;
-    padding: var(--pad-top) 0 var(--pad-bottom);
-    border-bottom: 1px solid var(--rule);
+    padding: clamp(36px, 6vw, 72px) 0 clamp(36px, 5vw, 64px);
+    background: linear-gradient(180deg, #e3f6fd 0%, #f4fbfe 60%, #fff 100%);
   }
-  .page-hero__inner {
-    position: relative;
-    /* text starts two squares to the right of the red margin */
-    --margin-x: var(--gutter);
-    padding-left: calc(var(--gutter) + var(--cell) * 1.5);
-  }
-  .page-hero__inner .margin-line {
-    top: calc(var(--pad-top) * -1);
-    bottom: calc(var(--pad-bottom) * -1);
+  .page-hero::after {
+    /* lime-to-cyan bar along the bottom edge */
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 6px;
+    background: var(--grad-green);
   }
   .page-hero h1 {
     max-width: 22ch;
@@ -88,7 +84,7 @@ const breadcrumbSchema = {
     list-style: none;
     margin: 0 0 20px;
     padding: 0;
-    font-size: 0.9rem;
+    font-size: 0.925rem;
     font-weight: 500;
     color: var(--muted);
   }
@@ -99,11 +95,10 @@ const breadcrumbSchema = {
   }
   .crumbs :global(svg) {
     transform: rotate(-90deg);
-    color: var(--rule);
   }
   .crumbs a {
     text-decoration: underline;
-    text-decoration-color: var(--rule);
+    text-decoration-color: var(--brand-100);
     text-underline-offset: 3px;
   }
   .crumbs a:hover {
@@ -111,6 +106,6 @@ const breadcrumbSchema = {
     text-decoration-color: currentColor;
   }
   .crumbs [aria-current] {
-    color: var(--ink-2);
+    color: var(--ink);
   }
 </style>

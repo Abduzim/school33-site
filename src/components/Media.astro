@@ -63,7 +63,7 @@ const {
     height: 100%;
     object-fit: cover;
   }
-  /* Empty photo slot: a blank notebook page with the subject icon. */
+  /* Empty photo slot: a soft gradient tile with the subject icon. */
   .media__placeholder {
     position: absolute;
     inset: 0;
@@ -71,29 +71,21 @@ const {
     place-content: center;
     justify-items: center;
     gap: 10px;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    background-color: var(--ph-bg);
-    background-image:
-      linear-gradient(var(--ph-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--ph-line) 1px, transparent 1px);
-    background-size: var(--cell) var(--cell);
-    background-position: -1px -1px;
+    background: var(--ph-bg);
     color: var(--ph-fg);
   }
   .media--brand {
-    --ph-bg: #fff;
-    --ph-line: var(--grid);
+    --ph-bg: linear-gradient(160deg, #e3f6fd, #cfe8f7);
     --ph-fg: var(--brand);
   }
   .media--accent {
-    --ph-bg: #fff;
-    --ph-line: #f3dfe2;
-    --ph-fg: var(--accent);
+    --ph-bg: linear-gradient(160deg, #eef6d9, #d3f1f5);
+    --ph-fg: #3c6f78;
   }
   .media--neutral {
     --ph-bg: var(--surface-2);
-    --ph-line: var(--rule);
     --ph-fg: var(--muted);
   }
 </style>

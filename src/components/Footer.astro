@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
+import SchoolDrawing from './SchoolDrawing.astro';
 import { footerLinks, policyLinks, url } from '@/lib/routes';
 import { useTranslations, type Locale } from '@/i18n/ui';
 import { getSettings } from '@/lib/content';
@@ -34,11 +35,12 @@ const year = new Date().getFullYear();
       </ul>
     </nav>
 
-    <nav aria-label={t('footer.policies')}>
-      <h2 class="footer__title">{t('footer.policies')}</h2>
+    <nav aria-label={t('nav.contact')}>
+      <h2 class="footer__title">{t('nav.contact')}</h2>
       <ul class="footer__links">
-        {policyLinks.map((l) => <li><a href={url(lang, l.path)}>{t(l.key)}</a></li>)}
-        <li><a href={url(lang, 'contact')}>{t('nav.contact')}</a></li>
+        <li><a href={url(lang, 'contact')}>{t('contact.form.title')}</a></li>
+        <li><a href={url(lang, 'staff-leadership')}>{t('nav.about.staff')}</a></li>
+        <li><a href={url(lang, 'about/directors-welcome')}>{t('nav.about.welcome')}</a></li>
       </ul>
     </nav>
 
@@ -62,8 +64,19 @@ const year = new Date().getFullYear();
     </div>
   </div>
 
-  <div class="container footer__bottom">
-    <p>© {year} {s.name[lang]}. {t('footer.rights')}</p>
+  <div class="footer__scene" aria-hidden="true">
+    <div class="container">
+      <SchoolDrawing label={s.short_name} class="footer__drawing" />
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <div class="container footer__bottom-inner">
+      <ul class="footer__legal">
+        {policyLinks.map((l) => <li><a href={url(lang, l.path)}>{t(l.key)}</a></li>)}
+      </ul>
+      <p>© {year} {s.name[lang]}. {t('footer.rights')}</p>
+    </div>
   </div>
 </footer>
 
@@ -71,19 +84,14 @@ const year = new Date().getFullYear();
   .footer {
     position: relative;
     margin-top: auto;
-    background: var(--brand-600);
-    color: rgb(255 255 255 / 0.8);
+    background: var(--footer);
+    color: rgb(255 255 255 / 0.85);
     padding-top: clamp(48px, 7vw, 80px);
-    border-top: 3px solid var(--accent);
-  }
-  .footer :global(.logo) {
-    color: #fff;
   }
   .footer__grid {
-    position: relative;
     display: grid;
     gap: 40px;
-    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
   }
   @media (max-width: 900px) {
     .footer__grid {
@@ -114,24 +122,18 @@ const year = new Date().getFullYear();
   .footer__contacts :global(svg) {
     flex: none;
     margin-top: 3px;
-    color: rgb(255 255 255 / 0.55);
-  }
-  .footer__contacts a,
-  .footer__links a {
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: 4px;
-    transition: color 0.2s, text-decoration-color 0.2s;
+    color: var(--accent);
   }
   .footer__contacts a:hover,
   .footer__links a:hover {
     color: #fff;
-    text-decoration-color: currentColor;
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
   .footer__title {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.05rem;
+    font-weight: 650;
+    letter-spacing: 0;
     color: #fff;
     margin-bottom: 16px;
   }
@@ -145,7 +147,7 @@ const year = new Date().getFullYear();
   }
   .footer__social {
     display: flex;
-    gap: 8px;
+    gap: 14px;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -153,31 +155,63 @@ const year = new Date().getFullYear();
   .footer__social a {
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius);
-    border: 1px solid rgb(255 255 255 / 0.25);
+    width: 36px;
+    height: 36px;
     color: #fff;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: color 0.2s;
   }
   .footer__social a:hover {
-    background: rgb(255 255 255 / 0.12);
-    border-color: #fff;
+    color: var(--accent);
   }
   .footer__muted {
-    color: rgb(255 255 255 / 0.6);
+    color: rgb(255 255 255 / 0.65);
     font-size: 0.95rem;
     max-width: 28ch;
   }
+
+  /* Line drawing standing on a cyan ground line, full width */
+  .footer__scene {
+    margin-top: 40px;
+    border-bottom: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .footer__scene .container {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .footer__scene :global(.footer__drawing) {
+    width: min(100%, 320px);
+    height: auto;
+    margin-bottom: -2px; /* sit the drawing's ground on the full-width line */
+  }
+
   .footer__bottom {
-    position: relative;
-    margin-top: 48px;
-    padding-block: 22px;
-    border-top: 1px solid rgb(255 255 255 / 0.14);
+    padding-block: 18px;
     font-size: 0.9rem;
-    color: rgb(255 255 255 / 0.6);
+  }
+  .footer__bottom-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+  }
+  .footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer__legal a {
+    color: var(--accent);
+  }
+  .footer__legal a:hover {
+    color: #fff;
   }
   .footer__bottom p {
     margin: 0;
+    color: rgb(255 255 255 / 0.7);
   }
 </style>

@@ -31,29 +31,28 @@ const path = Astro.url.pathname;
 <style>
   .lang {
     display: inline-flex;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    background: var(--surface);
-    overflow: hidden;
+    gap: 2px;
+    padding: 3px;
+    border-radius: var(--pill);
+    background: #fff;
+    border: 1px solid rgb(0 0 0 / 0.12);
   }
   .lang__item {
-    min-width: 42px;
-    padding: 7px 10px;
+    min-width: 40px;
+    padding: 4px 10px;
+    border-radius: var(--pill);
     font-size: 0.85rem;
     font-weight: 600;
     text-align: center;
-    color: var(--muted);
+    color: var(--ink-2);
     transition: background-color 0.2s, color 0.2s;
   }
-  .lang__item + .lang__item {
-    border-left: 1px solid var(--rule);
-  }
   .lang__item:hover {
-    color: var(--brand);
-    background: var(--brand-50);
+    color: var(--ink);
+    background: var(--surface-2);
   }
   .lang__item.is-active {
-    background: var(--brand);
+    background: var(--ink);
     color: #fff;
   }
 </style>

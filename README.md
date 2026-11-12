@@ -9,7 +9,7 @@ has a simple web editor at `/admin`, includes a contact form, and runs in Docker
 - **Search engines:** every page is pre-built HTML with a title, description, canonical URL,
   `hreflang` alternates, Open Graph tags and schema.org data. `sitemap-index.xml` and `robots.txt` are generated.
 - **Performance:** no JavaScript framework is shipped to visitors. The few small scripts (menu, scroll animations,
-  lightbox, form) are inlined. Images are lazy-loaded, and the Literata and Onest fonts are self-hosted.
+  lightbox, form) are inlined. Images are lazy-loaded, and the Onest font is self-hosted.
 
 School details (address, phone, email, director, student and teacher figures) come from the school’s public profile in the Ministry of Preschool and School Education system. Check them with the school and update them through the editor or the Markdown files.
 
@@ -60,18 +60,22 @@ deploy/            Production compose, deploy script, nginx config (see DEPLOY.m
 
 Defined once in `src/styles/global.css`:
 
-The design is based on an Uzbek school exercise book (katak daftar): cool paper, pale-blue squares,
-ink-blue text and the red margin line.
+The layout takes cues from commonapp.org: a sky-blue utility bar, pill buttons, a large white headline on a sky
+gradient, a lime "steps" block, lime-to-cyan gradient frames, grey card sections and a dark grey footer with a cyan
+line drawing. The school building drawing (`src/components/SchoolDrawing.astro`) is original.
 
 | Token | Value | Use |
 |---|---|---|
-| `--brand` | `#233a8f` | ink blue: buttons, links, the big school number |
-| `--accent` | `#c8313f` | red margin line; used sparingly |
-| `--ink` | `#141c3a` | body and heading text |
-| `--rule` / `--grid` | `#c9d4ec` / `#dde5f5` | ruled lines and paper squares |
+| `--brand` | `#0b6dbd` | blue: links, primary buttons, big numbers |
+| `--accent` | `#25c7dd` | cyan: icons and line drawings |
+| `--lime` | `#b6d961` | steps block |
+| `--sky` | `#8fdfff` | utility bar |
+| `--grad-green` / `--grad-blue` | gradients | frames around boxes |
 
-Fonts: **Literata** (headings, numbers) and **Onest** (body and interface). Both are self-hosted and cover
-Uzbek Latin (including `oʻ`, `gʻ`), Cyrillic and English.
+Font: **Onest** for everything. It is self-hosted and covers Uzbek Latin (including `oʻ`, `gʻ`), Cyrillic and English.
+
+Home page blocks are edited in the CMS: *Steps* (numbered 1–4), *Key numbers*, *Boxes* (parents/teachers) and the
+contact banner. When a *Hero image* is uploaded, the photo replaces the sky gradient and drawing.
 
 ---
 

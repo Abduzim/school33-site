@@ -146,8 +146,8 @@ const usedGroups = groups.filter((g) => people.some((p) => p.data.group === g.id
     margin-bottom: 48px;
   }
   .filter {
-    padding: 9px 16px;
-    border-radius: var(--radius);
+    padding: 9px 20px;
+    border-radius: var(--pill);
     border: 1px solid var(--rule);
     background: var(--surface);
     font-weight: 600;
@@ -200,7 +200,7 @@ const usedGroups = groups.filter((g) => people.some((p) => p.data.group === g.id
     border-color: var(--brand);
   }
   .person__name {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 1.15rem;
   }
@@ -241,7 +241,7 @@ const usedGroups = groups.filter((g) => people.some((p) => p.data.group === g.id
     margin-bottom: 4px;
   }
   .bio__role {
-    color: var(--accent);
+    color: var(--brand);
     font-weight: 700;
     margin-bottom: 20px;
   }

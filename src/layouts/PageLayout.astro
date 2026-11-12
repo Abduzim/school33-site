@@ -47,7 +47,7 @@ const group = mainNav.find((item) => item.children?.some((c) => c.path === path)
 
     {
       group && (
-        <aside class="page__aside" data-reveal style="--reveal-delay: 120ms">
+        <aside class="page__aside frame">
           <p class="page__aside-title">{t(group.key)}</p>
           <ul>
             {group.children!.map((c) => (
@@ -97,41 +97,37 @@ const group = mainNav.find((item) => item.children?.some((c) => c.path === path)
   }
   .page__aside {
     position: sticky;
-    top: calc(var(--header-h) + 24px);
-    padding: 4px 0 0;
-    border-top: 2px solid var(--brand);
+    top: calc(var(--header-h) + 64px);
+    padding: 22px 24px;
   }
   .page__aside-title {
-    font-family: var(--font-serif);
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--ink);
-    margin: 14px 0 6px;
+    margin: 0 0 8px;
   }
   .page__aside ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .page__aside li {
-    border-bottom: 1px solid var(--rule);
+  .page__aside li + li {
+    border-top: 1px solid var(--line);
   }
   .page__aside a {
     display: block;
-    padding: 11px 0 11px 14px;
+    padding: 10px 0;
     font-weight: 500;
     font-size: 0.975rem;
     color: var(--ink-2);
-    border-left: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
+    transition: color 0.2s;
   }
   .page__aside a:hover {
     color: var(--brand);
   }
   .page__aside a.is-active {
     color: var(--brand);
-    font-weight: 600;
-    border-left-color: var(--accent);
+    font-weight: 650;
   }
   @media (max-width: 900px) {
     .page {
