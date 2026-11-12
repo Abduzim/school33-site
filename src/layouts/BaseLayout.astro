@@ -1,0 +1,149 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { locales, localeNames, defaultLocale, useTranslations, type Locale } from '@/i18n/ui';
+import { switchLang } from '@/lib/routes';
+import { getSettings } from '@/lib/content';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  /** extra JSON-LD objects for this page */
+  schema?: Record<string, unknown>[];
+}
+
+const { lang, title, description, image, type = 'website', noindex = false, schema = [] } = Astro.props;
+const t = useTranslations(lang);
+const s = await getSettings();
+const siteName = s.name[lang];
+// Titles that already start with the school name (e.g. the home page) are used as they are.
+const fullTitle = title.startsWith(siteName) ? title : `${title} — ${siteName}`;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = image ?? s.og_image;
+const ogImageUrl = ogImage ? new URL(ogImage, site).href : undefined;
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'School',
+  name: siteName,
+  url: new URL(`/${lang}/`, site).href,
+  telephone: s.phone,
+  email: s.email,
+  alternateName: [...new Set([s.name.uz, s.name.ru, s.name.en, ...(s.locality ? [`${s.name[lang]}, ${s.locality[lang]}`] : [])])].filter(
+    (n) => n !== siteName,
+  ),
+  ...(description ? { description } : {}),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: s.address[lang],
+    ...(s.locality ? { addressLocality: s.locality[lang] } : {}),
+    ...(s.region ? { addressRegion: s.region[lang] } : {}),
+    addressCountry: 'UZ',
+  },
+  ...(ogImageUrl ? { image: ogImageUrl } : {}),
+  ...(s.logo ? { logo: new URL(s.logo, site).href } : {}),
+  ...(s.founded ? { foundingDate: s.founded } : {}),
+  sameAs: Object.values(s.socials).filter(Boolean),
+};
+const isHome = Astro.url.pathname.replace(/\/$/, '') === `/${lang}`;
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: siteName,
+  alternateName: [s.name.uz, s.name.ru, s.name.en].filter((n) => n !== siteName),
+  url: new URL(`/${lang}/`, site).href,
+  inLanguage: localeNames[lang].hreflang,
+};
+const jsonLd = [orgSchema, ...(isHome ? [websiteSchema] : []), ...schema];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {s.google_verification && <meta name="google-site-verification" content={s.google_verification} />}
+    {s.yandex_verification && <meta name="yandex-verification" content={s.yandex_verification} />}
+    {
+      locales.map((l) => (
+        <link rel="alternate" hreflang={localeNames[l].hreflang} href={new URL(switchLang(Astro.url.pathname, l), site).href} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(switchLang(Astro.url.pathname, defaultLocale), site).href} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={localeNames[lang].og} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#233a8f" />
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('skip')}</a>
+    <Header lang={lang} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+
+    <script>
+      // Events are built ahead of time, so hide the ones that have already finished.
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      document.querySelectorAll<HTMLElement>('[data-upcoming-list]').forEach((list) => {
+        const limit = Number(list.dataset.limit || Infinity);
+        const past = list.dataset.pastTarget ? document.querySelector<HTMLElement>(list.dataset.pastTarget) : null;
+        let shown = 0;
+        list.querySelectorAll<HTMLElement>('[data-event-end]').forEach((item) => {
+          const ended = new Date(item.dataset.eventEnd + 'T23:59:59') < today;
+          if (ended) {
+            if (past) past.prepend(item);
+            else item.remove();
+          } else if (++shown > limit) {
+            item.remove();
+          }
+        });
+        if (past) past.closest<HTMLElement>('[data-past-section]')?.toggleAttribute('hidden', past.children.length === 0);
+        list.closest<HTMLElement>('[data-upcoming-section]')?.classList.toggle('is-empty', shown === 0);
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  main {
+    flex: 1;
+  }
+  main:focus {
+    outline: none;
+  }
+</style>

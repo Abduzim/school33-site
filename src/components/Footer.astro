@@ -1,0 +1,183 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { footerLinks, policyLinks, url } from '@/lib/routes';
+import { useTranslations, type Locale } from '@/i18n/ui';
+import { getSettings } from '@/lib/content';
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const s = await getSettings();
+const socials = (['telegram', 'instagram', 'facebook', 'youtube'] as const).filter((k) => s.socials[k]);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <Logo href={url(lang)} name={s.name[lang]} tagline={s.tagline[lang]} logo={s.logo} monogram={s.short_name} inverted />
+      <ul class="footer__contacts">
+        <li><Icon name="pin" size={18} /><span>{s.address[lang]}</span></li>
+        {s.phone && <li><Icon name="phone" size={18} /><a href={`tel:${s.phone.replace(/[^+\d]/g, '')}`}>{s.phone}</a></li>}
+        {s.email && <li><Icon name="mail" size={18} /><a href={`mailto:${s.email}`}>{s.email}</a></li>}
+        {s.hours[lang] && <li><Icon name="clock" size={18} /><span>{s.hours[lang]}</span></li>}
+      </ul>
+    </div>
+
+    <nav aria-label={t('footer.quickLinks')}>
+      <h2 class="footer__title">{t('footer.quickLinks')}</h2>
+      <ul class="footer__links">
+        {footerLinks.map((l) => <li><a href={url(lang, l.path)}>{t(l.key)}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-label={t('footer.policies')}>
+      <h2 class="footer__title">{t('footer.policies')}</h2>
+      <ul class="footer__links">
+        {policyLinks.map((l) => <li><a href={url(lang, l.path)}>{t(l.key)}</a></li>)}
+        <li><a href={url(lang, 'contact')}>{t('nav.contact')}</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="footer__title">{t('footer.follow')}</h2>
+      {
+        socials.length > 0 ? (
+          <ul class="footer__social">
+            {socials.map((k) => (
+              <li>
+                <a href={s.socials[k]} target="_blank" rel="noopener noreferrer" aria-label={k}>
+                  <Icon name={k} size={20} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="footer__muted">{t('footer.socialSoon')}</p>
+        )
+      }
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>© {year} {s.name[lang]}. {t('footer.rights')}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    margin-top: auto;
+    background: var(--brand-600);
+    color: rgb(255 255 255 / 0.8);
+    padding-top: clamp(48px, 7vw, 80px);
+    border-top: 3px solid var(--accent);
+  }
+  .footer :global(.logo) {
+    color: #fff;
+  }
+  .footer__grid {
+    position: relative;
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  }
+  @media (max-width: 900px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 520px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .footer__contacts {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 0;
+    display: grid;
+    gap: 12px;
+    font-size: 0.975rem;
+  }
+  .footer__contacts li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .footer__contacts :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: rgb(255 255 255 / 0.55);
+  }
+  .footer__contacts a,
+  .footer__links a {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 4px;
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
+  .footer__contacts a:hover,
+  .footer__links a:hover {
+    color: #fff;
+    text-decoration-color: currentColor;
+  }
+  .footer__title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .footer__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+    font-size: 0.975rem;
+  }
+  .footer__social {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius);
+    border: 1px solid rgb(255 255 255 / 0.25);
+    color: #fff;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  .footer__social a:hover {
+    background: rgb(255 255 255 / 0.12);
+    border-color: #fff;
+  }
+  .footer__muted {
+    color: rgb(255 255 255 / 0.6);
+    font-size: 0.95rem;
+    max-width: 28ch;
+  }
+  .footer__bottom {
+    position: relative;
+    margin-top: 48px;
+    padding-block: 22px;
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    font-size: 0.9rem;
+    color: rgb(255 255 255 / 0.6);
+  }
+  .footer__bottom p {
+    margin: 0;
+  }
+</style>

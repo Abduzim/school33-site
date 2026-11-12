@@ -1,0 +1,144 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Media from '@/components/Media.astro';
+import { mainNav, url } from '@/lib/routes';
+import { formatDate, useTranslations, type Locale } from '@/i18n/ui';
+
+// Layout for text pages (About, Director's welcome, policies, ...).
+interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  path: string;
+  heroImage?: string;
+  updated?: Date;
+}
+const { lang, title, description, path, heroImage, updated } = Astro.props;
+const t = useTranslations(lang);
+
+// Show sibling links in a sidebar for pages inside a menu group (e.g. About).
+const group = mainNav.find((item) => item.children?.some((c) => c.path === path));
+---
+
+<BaseLayout lang={lang} title={title} description={description} image={heroImage}>
+  <PageHero lang={lang} title={title} lead={description} path={path} />
+
+  <div class="container page">
+    <article class="page__main">
+      {
+        heroImage && (
+          <div class="page__image" data-reveal="scale">
+            <Media src={heroImage} alt={title} ratio="16 / 8" eager />
+          </div>
+        )
+      }
+      <div class="prose" data-reveal>
+        <slot />
+      </div>
+      {
+        updated && (
+          <p class="page__updated">
+            {t('common.updated')}: <time datetime={updated.toISOString()}>{formatDate(updated, lang)}</time>
+          </p>
+        )
+      }
+    </article>
+
+    {
+      group && (
+        <aside class="page__aside" data-reveal style="--reveal-delay: 120ms">
+          <p class="page__aside-title">{t(group.key)}</p>
+          <ul>
+            {group.children!.map((c) => (
+              <li>
+                <a
+                  href={url(lang, c.path)}
+                  class:list={{ 'is-active': c.path === path }}
+                  aria-current={c.path === path ? 'page' : undefined}
+                >
+                  {t(c.key)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+  </div>
+  <slot name="after" />
+</BaseLayout>
+
+<style>
+  .page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: clamp(32px, 6vw, 80px);
+    padding-block: clamp(40px, 7vw, 88px);
+    align-items: start;
+  }
+  .page:not(:has(.page__aside)) {
+    grid-template-columns: minmax(0, 780px);
+    justify-content: center;
+  }
+  .page__main {
+    min-width: 0;
+    max-width: 780px;
+  }
+  .page__image {
+    margin-bottom: 40px;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .page__updated {
+    margin-top: 48px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .page__aside {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    padding: 4px 0 0;
+    border-top: 2px solid var(--brand);
+  }
+  .page__aside-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 14px 0 6px;
+  }
+  .page__aside ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .page__aside li {
+    border-bottom: 1px solid var(--rule);
+  }
+  .page__aside a {
+    display: block;
+    padding: 11px 0 11px 14px;
+    font-weight: 500;
+    font-size: 0.975rem;
+    color: var(--ink-2);
+    border-left: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .page__aside a:hover {
+    color: var(--brand);
+  }
+  .page__aside a.is-active {
+    color: var(--brand);
+    font-weight: 600;
+    border-left-color: var(--accent);
+  }
+  @media (max-width: 900px) {
+    .page {
+      grid-template-columns: 1fr;
+    }
+    .page__aside {
+      position: static;
+    }
+  }
+</style>

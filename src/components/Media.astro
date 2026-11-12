@@ -1,0 +1,99 @@
+---
+import Icon from './Icon.astro';
+
+// Shows an image if `src` is set, otherwise a branded placeholder.
+// Images are lazy-loaded by default; pass `eager` for the main image above the fold.
+interface Props {
+  src?: string;
+  alt?: string;
+  ratio?: string; // CSS aspect-ratio, e.g. "16 / 10"
+  eager?: boolean;
+  label?: string; // text shown on the placeholder
+  tone?: 'brand' | 'accent' | 'neutral';
+  icon?: 'image' | 'user';
+  width?: number;
+  height?: number;
+  class?: string;
+}
+
+const {
+  src,
+  alt = '',
+  ratio = '16 / 10',
+  eager = false,
+  label,
+  tone = 'brand',
+  icon = 'image',
+  width = 1200,
+  height = 750,
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['media', `media--${tone}`, className]} style={`aspect-ratio: ${ratio}`}>
+  {
+    src ? (
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+        decoding="async"
+      />
+    ) : (
+      <div class="media__placeholder" role="img" aria-label={alt || label || ''}>
+        <Icon name={icon} size={icon === 'user' ? 44 : 34} />
+        {label && <span>{label}</span>}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .media {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+  .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Empty photo slot: a blank notebook page with the subject icon. */
+  .media__placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 10px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: var(--ph-bg);
+    background-image:
+      linear-gradient(var(--ph-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ph-line) 1px, transparent 1px);
+    background-size: var(--cell) var(--cell);
+    background-position: -1px -1px;
+    color: var(--ph-fg);
+  }
+  .media--brand {
+    --ph-bg: #fff;
+    --ph-line: var(--grid);
+    --ph-fg: var(--brand);
+  }
+  .media--accent {
+    --ph-bg: #fff;
+    --ph-line: #f3dfe2;
+    --ph-fg: var(--accent);
+  }
+  .media--neutral {
+    --ph-bg: var(--surface-2);
+    --ph-line: var(--rule);
+    --ph-fg: var(--muted);
+  }
+</style>

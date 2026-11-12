@@ -1,0 +1,59 @@
+---
+import { locales, localeNames, useTranslations, type Locale } from '@/i18n/ui';
+import { switchLang } from '@/lib/routes';
+
+interface Props {
+  lang: Locale;
+  class?: string;
+}
+const { lang, class: className } = Astro.props;
+const t = useTranslations(lang);
+const path = Astro.url.pathname;
+---
+
+<div class:list={['lang', className]} role="group" aria-label={t('lang.label')}>
+  {
+    locales.map((l) => (
+      <a
+        href={switchLang(path, l)}
+        hreflang={localeNames[l].hreflang}
+        lang={l}
+        class:list={['lang__item', { 'is-active': l === lang }]}
+        aria-current={l === lang ? 'true' : undefined}
+        title={localeNames[l].long}
+      >
+        {localeNames[l].short}
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .lang {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .lang__item {
+    min-width: 42px;
+    padding: 7px 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--muted);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .lang__item + .lang__item {
+    border-left: 1px solid var(--rule);
+  }
+  .lang__item:hover {
+    color: var(--brand);
+    background: var(--brand-50);
+  }
+  .lang__item.is-active {
+    background: var(--brand);
+    color: #fff;
+  }
+</style>

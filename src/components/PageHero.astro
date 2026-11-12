@@ -1,0 +1,116 @@
+---
+import Icon from './Icon.astro';
+import { parentOf, url } from '@/lib/routes';
+import { useTranslations, type Locale } from '@/i18n/ui';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  lead?: string;
+  /** path after /<lang>/, used for breadcrumbs */
+  path: string;
+  eyebrow?: string;
+}
+const { lang, title, lead, path, eyebrow } = Astro.props;
+const t = useTranslations(lang);
+const parent = parentOf(path);
+const crumbs = [
+  { label: t('nav.home'), href: url(lang) },
+  ...(parent && parent.path !== path ? [{ label: t(parent.key), href: url(lang, parent.path) }] : []),
+];
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [...crumbs, { label: title, href: url(lang, path) }].map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: new URL(c.href, Astro.site ?? Astro.url.origin).href,
+  })),
+};
+---
+
+<section class="page-hero paper">
+  <div class="container page-hero__inner">
+    <span class="margin-line" aria-hidden="true"></span>
+    <nav class="crumbs" aria-label={t('common.breadcrumbs')}>
+      <ol>
+        {
+          crumbs.map((c) => (
+            <li>
+              <a href={c.href}>{c.label}</a>
+              <Icon name="chevron" size={14} />
+            </li>
+          ))
+        }
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {lead && lead !== title && <p class="lead page-hero__lead">{lead}</p>}
+  </div>
+</section>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+<style>
+  .page-hero {
+    --pad-top: clamp(32px, 6vw, 72px);
+    --pad-bottom: clamp(32px, 5vw, 64px);
+    position: relative;
+    overflow: hidden;
+    padding: var(--pad-top) 0 var(--pad-bottom);
+    border-bottom: 1px solid var(--rule);
+  }
+  .page-hero__inner {
+    position: relative;
+    /* text starts two squares to the right of the red margin */
+    --margin-x: var(--gutter);
+    padding-left: calc(var(--gutter) + var(--cell) * 1.5);
+  }
+  .page-hero__inner .margin-line {
+    top: calc(var(--pad-top) * -1);
+    bottom: calc(var(--pad-bottom) * -1);
+  }
+  .page-hero h1 {
+    max-width: 22ch;
+    margin-bottom: 0.3em;
+  }
+  .page-hero__lead {
+    max-width: 62ch;
+    margin: 0;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .crumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .crumbs :global(svg) {
+    transform: rotate(-90deg);
+    color: var(--rule);
+  }
+  .crumbs a {
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 3px;
+  }
+  .crumbs a:hover {
+    color: var(--brand);
+    text-decoration-color: currentColor;
+  }
+  .crumbs [aria-current] {
+    color: var(--ink-2);
+  }
+</style>
