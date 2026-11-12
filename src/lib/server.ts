@@ -36,7 +36,14 @@ export function isSameOrigin(request: Request): boolean {
   return allowed.has(host);
 }
 
+const onWorkers = typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers';
+
 export function clientIp(request: Request, fallback: string): string {
+  // On Cloudflare Workers this header is set by Cloudflare itself and cannot be faked by visitors.
+  if (onWorkers) {
+    const cf = request.headers.get('cf-connecting-ip')?.trim();
+    if (cf) return cf;
+  }
   if (env('TRUST_PROXY') === 'true') {
     // X-Real-IP is set by our nginx to the connecting address, so visitors can't fake it.
     const real = request.headers.get('x-real-ip')?.trim();

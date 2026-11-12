@@ -172,6 +172,21 @@ Local setup: `createdb school33`, then put `DATABASE_URL=postgresql://<you>@loca
 `npm run dev` and `npm start` read `.env` automatically. To read messages:
 `psql school33 -c "select * from contact_messages order by created_at desc"`.
 
+## Deployment (Cloudflare Workers, free — recommended)
+
+The site runs on Cloudflare Workers: static pages are served from Cloudflare's network, and the few server routes
+(contact form, `/admin` login, the language redirect on `/`) run as a Worker. It never sleeps.
+
+```bash
+npx wrangler login                                  # once, opens the browser
+npx wrangler secret put DATABASE_URL                # paste the Neon connection string (stored encrypted)
+SITE_URL=https://school33-qibray.<account>.workers.dev npm run deploy:cf
+```
+
+`npm run preview:cf` runs the Cloudflare build locally (it reads `.env`). Settings are in `wrangler.jsonc`.
+Email over SMTP is not available on Workers; messages are stored in PostgreSQL.
+Without `DEPLOY_TARGET=cloudflare`, `npm run build` still produces the Node.js server used by Docker and Render.
+
 ## Deployment (Render, free)
 
 1. Create a free PostgreSQL database on [neon.tech](https://neon.tech) and copy its connection string.

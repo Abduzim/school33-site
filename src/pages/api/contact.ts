@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import nodemailer, { type Transporter } from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 import { defaultLocale, isLocale } from '@/i18n/ui';
 import { dbConfigured, saveContactMessage } from '@/lib/db';
 import { clientIp, env, isSameOrigin, json, rateLimiter } from '@/lib/server';
@@ -11,8 +11,10 @@ const SUBJECTS = new Set(['general', 'admissions', 'employment', 'other']);
 const EMAIL_RE = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
 
 let transporter: Transporter | undefined;
-function getTransport() {
+// nodemailer is loaded only when SMTP is configured (it does not run on Cloudflare Workers).
+async function getTransport() {
   if (!env('SMTP_HOST')) return undefined;
+  const { default: nodemailer } = await import('nodemailer');
   transporter ??= nodemailer.createTransport({
     host: env('SMTP_HOST'),
     port: Number(env('SMTP_PORT') ?? 587),
@@ -88,7 +90,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     }
   }
 
-  const transport = getTransport();
+  const transport = await getTransport();
   if (transport) {
     attempted = true;
     try {

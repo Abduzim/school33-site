@@ -1,0 +1,15 @@
+// Cloudflare Workers settings. Deploy with: npm run deploy:cf
+// Secrets (DATABASE_URL, GITHUB_CLIENT_SECRET) are stored with `npx wrangler secret put <NAME>`,
+// never in this file.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "school33-qibray",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "assets": { "binding": "ASSETS", "directory": "./dist/client" },
+  "observability": { "enabled": true },
+  "vars": {
+    "TRUST_PROXY": "true"
+  }
+}
